@@ -93,15 +93,12 @@ jobs:
                     \"number\": $NUMBER
                   },
                   \"구분\": {
-                    \"select\": {\"name\": \"$CATEGORY\"}
+                    \"multi_select\": [
+                      {\"name\": \"$CATEGORY\"}
+                    ]
                   },
                   \"GitHub\": {
                     \"url\": \"$LINK\"
-                  },
-                  \"생성일시\": {
-                    \"date\": {
-                      \"start\": \"$NOW_DATE\"
-                    }
                   }
                 },
                 \"children\": [
