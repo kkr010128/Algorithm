@@ -78,7 +78,7 @@ jobs:
               -H "Notion-Version: 2025-09-03" \
               -d "{
                 \"parent\": {
-                  \"database_id\": \"$NOTION_DATABASE_ID\"
+                  \"data_source_id\": \"$NOTION_DATABASE_ID\"
                 },
                 \"properties\": {
                   \"이름\": {
