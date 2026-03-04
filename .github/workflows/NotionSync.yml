@@ -22,13 +22,17 @@ jobs:
 
           set -e
 
+          
+          echo "===== RAW DIFF ====="
+          git diff --name-status HEAD^ HEAD || true
+          echo "===================="
+
           # ----------------------------
           # 1️⃣ 새로 추가된 README 감지
           # ----------------------------
 
           if git rev-parse HEAD^ >/dev/null 2>&1; then
             FILES=$(git diff --name-status HEAD^ HEAD \
-              | grep '^A' \
               | grep 'Algorithm/' \
               | grep 'README.md' \
               | awk '{print $2}')
