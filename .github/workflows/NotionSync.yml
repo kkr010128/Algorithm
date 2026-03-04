@@ -75,7 +75,7 @@ jobs:
             curl -s -X POST https://api.notion.com/v1/pages \
               -H "Authorization: Bearer $NOTION_TOKEN" \
               -H "Content-Type: application/json" \
-              -H "Notion-Version: 25-09-03" \
+              -H "Notion-Version: 2025-09-03" \
               -d "{
                 \"parent\": {
                   \"database_id\": \"$NOTION_DATABASE_ID\"
