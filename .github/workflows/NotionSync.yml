@@ -22,20 +22,20 @@ jobs:
 
           set -e
 
+          # 🔥 한글 경로 깨짐 방지
+          git config --global core.quotepath false
+        
           echo "===== RAW DIFF ====="
           git diff --name-status HEAD^ HEAD || true
           echo "===================="
-
-          # ----------------------------
-          # 1️⃣ 새로 추가/수정된 README 감지
-          # ----------------------------
+        
           if git rev-parse HEAD^ >/dev/null 2>&1; then
             FILES=$(git diff --name-only HEAD^ HEAD \
               | grep 'README.md' || true)
           else
             FILES=$(git ls-files | grep 'README.md')
           fi
-
+        
           echo "Detected files:"
           echo "$FILES"
 
