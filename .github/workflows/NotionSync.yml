@@ -14,7 +14,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Process new problems
+      - name: Sync to Notion
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
@@ -22,22 +22,18 @@ jobs:
 
           set -e
 
-          
           echo "===== RAW DIFF ====="
           git diff --name-status HEAD^ HEAD || true
           echo "===================="
 
           # ----------------------------
-          # 1️⃣ 새로 추가된 README 감지
+          # 1️⃣ 새로 추가/수정된 README 감지
           # ----------------------------
-
           if git rev-parse HEAD^ >/dev/null 2>&1; then
-            FILES=$(git diff --name-status HEAD^ HEAD \
-              | grep 'Algorithm/' \
-              | grep 'README.md' \
-              | awk '{print $2}')
+            FILES=$(git diff --name-only HEAD^ HEAD \
+              | grep 'README.md' || true)
           else
-            FILES=$(git ls-files | grep 'Algorithm/' | grep 'README.md')
+            FILES=$(git ls-files | grep 'README.md')
           fi
 
           echo "Detected files:"
@@ -47,17 +43,18 @@ jobs:
 
             DIR=$(dirname "$FILE")
 
-            TITLE_LINE=$(grep -m 1 '^#' "$FILE")
+            # README 첫 줄에서 제목 파싱
+            TITLE_LINE=$(grep -m 1 '^#' "$FILE" || true)
 
             RAW_LEVEL=$(echo "$TITLE_LINE" | sed -n 's/.*\[level \([0-9]\+\)\].*/\1/ip')
-            LEVEL="Lv.$RAW_LEVEL"
+            LEVEL="Lv.${RAW_LEVEL:-0}"
 
-            NUMBER=$(echo "$TITLE_LINE" | sed -n 's/.*- \([0-9]\+\).*/\1/p')
-            NAME=$(echo "$TITLE_LINE" | sed -n 's/.*] \(.*\) - [0-9]\+/\1/p')
+            NUMBER=$(echo "$DIR" | awk -F/ '{print $3}' | cut -d. -f1)
+            NAME=$(echo "$DIR" | awk -F/ '{print $3}' | cut -d. -f2-)
 
-            CATEGORY=$(echo "$DIR" | awk -F/ '{print $2}')
+            CATEGORY=$(echo "$DIR" | awk -F/ '{print $1}')
 
-            CODE_FILE=$(ls "$DIR" | grep -E '\.(py|java|cpp|js|ts)$' | head -n 1)
+            CODE_FILE=$(ls "$DIR" | grep -E '\.(java|py|cpp|js|ts)$' | head -n 1)
 
             if [ -z "$CODE_FILE" ]; then
               echo "No code file found in $DIR"
