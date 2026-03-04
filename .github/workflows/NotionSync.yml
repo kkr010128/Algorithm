@@ -1,0 +1,123 @@
+name: Notion Sync
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Process new problems
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+          NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
+        run: |
+
+          # ----------------------------
+          # 1️⃣ data_source_id 조회
+          # ----------------------------
+          DATA_SOURCE_ID=$(curl -s \
+            -H "Authorization: Bearer $NOTION_TOKEN" \
+            -H "Notion-Version: 2025-09-03" \
+            https://api.notion.com/v1/databases/$NOTION_DATABASE_ID \
+            | jq -r '.data_sources[0].id')
+
+          if [ -z "$DATA_SOURCE_ID" ]; then
+            echo "data_source_id not found"
+            exit 1
+          fi
+
+          # ----------------------------
+          # 2️⃣ 새로 추가된 README 감지
+          # ----------------------------
+          FILES=$(git diff --name-status ${{ github.event.before }} ${{ github.sha }} \
+            | grep '^A' \
+            | grep 'Algorithm/' \
+            | grep 'README.md' \
+            | awk '{print $2}')
+
+          for FILE in $FILES; do
+
+            DIR=$(dirname "$FILE")
+
+            TITLE_LINE=$(grep -m 1 '^#' "$FILE")
+
+            RAW_LEVEL=$(echo "$TITLE_LINE" | sed -n 's/.*\[level \([0-9]\+\)\].*/\1/ip')
+            LEVEL="Lv.$RAW_LEVEL"
+
+            NUMBER=$(echo "$TITLE_LINE" | sed -n 's/.*- \([0-9]\+\).*/\1/p')
+            NAME=$(echo "$TITLE_LINE" | sed -n 's/.*] \(.*\) - [0-9]\+/\1/p')
+
+            CATEGORY=$(echo "$DIR" | awk -F/ '{print $2}')
+
+            CODE_FILE=$(ls "$DIR" | grep -E '\.(py|java|cpp|js|ts)$' | head -n 1)
+
+            if [ -z "$CODE_FILE" ]; then
+              continue
+            fi
+
+            CODE_CONTENT=$(cat "$DIR/$CODE_FILE" | jq -Rs .)
+
+            LINK="${{ github.server_url }}/${{ github.repository }}/blob/main/$DIR"
+
+            NOW_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+            # ----------------------------
+            # 3️⃣ Notion 페이지 생성
+            # ----------------------------
+            curl -X POST https://api.notion.com/v1/pages \
+              -H "Authorization: Bearer $NOTION_TOKEN" \
+              -H "Content-Type: application/json" \
+              -H "Notion-Version: 2025-09-03" \
+              -d "{
+                \"parent\": {
+                  \"type\": \"data_source_id\",
+                  \"data_source_id\": \"$DATA_SOURCE_ID\"
+                },
+                \"properties\": {
+                  \"이름\": {
+                    \"title\": [
+                      {\"text\": {\"content\": \"$NAME\"}}
+                    ]
+                  },
+                  \"난이도\": {
+                    \"select\": {\"name\": \"$LEVEL\"}
+                  },
+                  \"문제번호\": {
+                    \"number\": $NUMBER
+                  },
+                  \"구분\": {
+                    \"select\": {\"name\": \"$CATEGORY\"}
+                  },
+                  \"GitHub\": {
+                    \"url\": \"$LINK\"
+                  },
+                  \"생성일시\": {
+                    \"date\": {
+                      \"start\": \"$NOW_DATE\"
+                    }
+                  }
+                },
+                \"children\": [
+                  {
+                    \"object\": \"block\",
+                    \"type\": \"code\",
+                    \"code\": {
+                      \"language\": \"plain text\",
+                      \"rich_text\": [
+                        {
+                          \"type\": \"text\",
+                          \"text\": {\"content\": $CODE_CONTENT}
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }"
+
+          done
