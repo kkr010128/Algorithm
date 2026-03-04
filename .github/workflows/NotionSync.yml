@@ -11,12 +11,16 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # 🔥 전체 히스토리 가져오기 (필수)
 
       - name: Process new problems
         env:
           NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
           NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
         run: |
+
+          set -e
 
           # ----------------------------
           # 1️⃣ data_source_id 조회
@@ -27,19 +31,30 @@ jobs:
             https://api.notion.com/v1/databases/$NOTION_DATABASE_ID \
             | jq -r '.data_sources[0].id')
 
-          if [ -z "$DATA_SOURCE_ID" ]; then
+          if [ -z "$DATA_SOURCE_ID" ] || [ "$DATA_SOURCE_ID" = "null" ]; then
             echo "data_source_id not found"
             exit 1
           fi
 
+          echo "DATA_SOURCE_ID: $DATA_SOURCE_ID"
+
           # ----------------------------
           # 2️⃣ 새로 추가된 README 감지
           # ----------------------------
-          FILES=$(git diff --name-status ${{ github.event.before }} ${{ github.sha }} \
-            | grep '^A' \
-            | grep 'Algorithm/' \
-            | grep 'README.md' \
-            | awk '{print $2}')
+
+          if git rev-parse HEAD^ >/dev/null 2>&1; then
+            FILES=$(git diff --name-status HEAD^ HEAD \
+              | grep '^A' \
+              | grep 'Algorithm/' \
+              | grep 'README.md' \
+              | awk '{print $2}')
+          else
+            # 첫 커밋일 경우
+            FILES=$(git ls-files | grep 'Algorithm/' | grep 'README.md')
+          fi
+
+          echo "Detected files:"
+          echo "$FILES"
 
           for FILE in $FILES; do
 
@@ -58,6 +73,7 @@ jobs:
             CODE_FILE=$(ls "$DIR" | grep -E '\.(py|java|cpp|js|ts)$' | head -n 1)
 
             if [ -z "$CODE_FILE" ]; then
+              echo "No code file found in $DIR"
               continue
             fi
 
@@ -67,10 +83,12 @@ jobs:
 
             NOW_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
 
+            echo "Creating Notion page for $NAME"
+
             # ----------------------------
             # 3️⃣ Notion 페이지 생성
             # ----------------------------
-            curl -X POST https://api.notion.com/v1/pages \
+            curl -s -X POST https://api.notion.com/v1/pages \
               -H "Authorization: Bearer $NOTION_TOKEN" \
               -H "Content-Type: application/json" \
               -H "Notion-Version: 2025-09-03" \
