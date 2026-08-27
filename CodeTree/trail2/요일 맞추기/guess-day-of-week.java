@@ -45,7 +45,7 @@ public class Main {
     }
 
     private static int getDate(int diffDays) {
-        return diffDays >= 7 ? diffDays % 7 : diffDays;
+        return diffDays % 7;
     }
 }
 /*
@@ -63,19 +63,7 @@ public class Main {
     reverseDates[1] = "Sun"이 되므로 원하는 결과를 얻을 수 있다.
 
     코드 리뷰(GPT):
-    이전 코드에서 plusDiffDays()와 minusDiffDays()가 모두 양수 거리만 반환하여
-    getDate()에서는 이동 방향을 알 수 없었던 문제가 있었다.
-
-    현재 코드는 isReverse를 추가하여
-    미래 방향과 과거 방향을 명확하게 구분했기 때문에 해당 문제가 해결되었다.
-
-    getDate()의
-        return diffDays >= 7 ? diffDays % 7 : diffDays;
-    는 정상적으로 동작하지만,
-    diffDays가 7보다 작아도 diffDays % 7의 결과는 동일하므로
-    다음처럼 단순화할 수 있다.
-
-        return diffDays % 7;
+    isReverse를 추가하여 미래 방향과 과거 방향을 명확하게 구분했기 때문에 해당 문제가 해결되었다.
 
     현재 방식은 요일 배열을 두 개 사용하는 구조라 이해하기 쉽다는 장점이 있다.
     다만 같은 요일 정보를 정방향/역방향으로 중복 저장한다는 점은 있다.
