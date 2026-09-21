@@ -1,0 +1,26 @@
+---
+id: "swea:1210"
+platform: "swea"
+platform_problem_id: "1210"
+title: "［S／W 문제해결 기본］ 2일차 － Ladder1"
+source_url: "https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV14ABYKADACFAYh"
+difficulty: "D4"
+primary_category: "문자열"
+tags:
+---
+
+# [D4] [S/W 문제해결 기본] 2일차 - Ladder1 - 1210
+
+[문제 링크](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV14ABYKADACFAYh)
+
+### 성능 요약
+
+메모리: 102,708 KB, 시간: 356 ms, 코드길이: 1,917 Bytes
+
+### 제출 일자
+
+2025-11-13 13:57
+
+
+
+> 출처: SW Expert Academy, https://swexpertacademy.com/main/code/problem/problemList.do

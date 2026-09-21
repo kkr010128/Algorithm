@@ -1,0 +1,39 @@
+---
+id: "codetree-concept:e660bebb7e30"
+platform: "codetree"
+platform_problem_id: ""
+title: "객체 - Class"
+source_url: "https://www.codetree.ai/ko/trails/complete/curated-cards/intro-007/introduction"
+difficulty: ""
+primary_category: "정렬"
+tags:
+  - "개념"
+  - "concepts"
+curriculum:
+  trail: "2"
+  chapter: "3"
+  lesson: "2"
+---
+
+# 객체 - Class
+
+## 출처
+
+[https://www.codetree.ai/ko/trails/complete/curated-cards/intro-007/introduction](https://www.codetree.ai/ko/trails/complete/curated-cards/intro-007/introduction)
+
+## 학습 목표
+
+`객체 - Class`을 사용할 상황과 실행 순서를 구분해 정리한다. 정렬 기준을 먼저 정의하고 동일한 값일 때 적용할 다음 기준을 결정한다. 정렬 후에는 필요한 값의 위치를 단순하게 찾을 수 있다.
+
+## 직접 만든 예제
+
+```java
+int[] values = {3, 1, 2};
+java.util.Arrays.sort(values);
+```
+
+## 점검 항목
+
+- 입력과 출력의 자료형을 확인한다.
+- 경계값에서 같은 규칙이 적용되는지 확인한다.
+- 실행 순서를 손으로 한 번 추적한다.

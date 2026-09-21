@@ -1,0 +1,39 @@
+---
+id: "codetree-concept:9c8da5b08343"
+platform: "codetree"
+platform_problem_id: ""
+title: "While"
+source_url: "https://www.codetree.ai/ko/trails/complete/curated-cards/nl-pre-while/introduction"
+difficulty: ""
+primary_category: "기초-문법"
+tags:
+  - "개념"
+  - "concepts"
+curriculum:
+  trail: "0"
+  chapter: "4"
+  lesson: "3"
+---
+
+# While
+
+## 출처
+
+[https://www.codetree.ai/ko/trails/complete/curated-cards/nl-pre-while/introduction](https://www.codetree.ai/ko/trails/complete/curated-cards/nl-pre-while/introduction)
+
+## 학습 목표
+
+`While`을 사용할 상황과 실행 순서를 구분해 정리한다. 값의 흐름과 실행 순서를 작은 단위로 나눠 확인한다. 입력 형식, 연산 순서, 분기 조건을 명시하면 실수를 줄일 수 있다.
+
+## 직접 만든 예제
+
+```java
+int value = 3;
+if (value > 0) System.out.println(value);
+```
+
+## 점검 항목
+
+- 입력과 출력의 자료형을 확인한다.
+- 경계값에서 같은 규칙이 적용되는지 확인한다.
+- 실행 순서를 손으로 한 번 추적한다.

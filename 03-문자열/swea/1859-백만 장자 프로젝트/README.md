@@ -1,0 +1,26 @@
+---
+id: "swea:1859"
+platform: "swea"
+platform_problem_id: "1859"
+title: "백만 장자 프로젝트"
+source_url: "https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV5LrsUaDxcDFAXc"
+difficulty: "D2"
+primary_category: "문자열"
+tags:
+---
+
+# [D2] 백만 장자 프로젝트 - 1859
+
+[문제 링크](https://swexpertacademy.com/main/code/problem/problemDetail.do?contestProbId=AV5LrsUaDxcDFAXc)
+
+### 성능 요약
+
+메모리: 130,468 KB, 시간: 1,812 ms, 코드길이: 950 Bytes
+
+### 제출 일자
+
+2025-11-18 21:31
+
+
+
+> 출처: SW Expert Academy, https://swexpertacademy.com/main/code/problem/problemList.do
